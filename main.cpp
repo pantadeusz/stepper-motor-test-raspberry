@@ -45,9 +45,29 @@ SOFTWARE.
 
 #include <unistd.h>
 
+
+/**
+
+
+Select Pi1 or Pi3
+
+
+**/
+
+
+
 // #define BCM2708_PERI_BASE       0x20000000   // raspi 1 //
 #define BCM2708_PERI_BASE 0x3F000000 // raspi 3 //
+
 #define GPIO_BASE (BCM2708_PERI_BASE + 0x200000)
+
+
+
+
+
+
+
+
 
 #define BLOCK_SIZE (4 * 1024)
 
@@ -186,10 +206,17 @@ int main(int argc, char **argv){
 //        {"step",5},
 
 
-        {"distance",1000},
-        {"delay", 10000}
+        {"distance",2000},
+        {"delay", 5000}
     };
-
+    std::string key = "";
+    for (auto e: args) {
+        if (cfg.count(e)) {
+            key = e;
+        } else if (cfg.count(key)) {
+            cfg[key] = std::stod(e);
+        }
+    }
     init(cfg["step"],cfg["dir"],cfg["en"]);
     enable_stepper(true,cfg["step"],cfg["dir"],cfg["en"]);
     auto prevTime = std::chrono::steady_clock::now();
